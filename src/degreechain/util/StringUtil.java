@@ -23,10 +23,10 @@ public class StringUtil {
 			//Applies sha256 to our input, 
 			byte[] hash = digest.digest(input.getBytes("UTF-8"));
 	        
-			StringBuffer hexString = new StringBuffer(); // This will contain hash as hexidecimal
-			for (int i = 0; i < hash.length; i++) {
-				String hex = Integer.toHexString(0xff & hash[i]);
-				if(hex.length() == 1) hexString.append('0');
+			StringBuilder hexString = new StringBuilder(); // This will contain hash as hexidecimal
+			for (byte aHash : hash) {
+				String hex = Integer.toHexString(0xff & aHash);
+				if (hex.length() == 1) hexString.append('0');
 				hexString.append(hex);
 			}
 			return hexString.toString();
@@ -39,14 +39,13 @@ public class StringUtil {
 	//Applies ECDSA Signature and returns the result ( as bytes ).
 	public static byte[] applyECDSASig(BCECPrivateKey privateKey, String input) {
 		Signature dsa;
-		byte[] output = new byte[0];
+		byte[] output;
 		try {
 			dsa = Signature.getInstance("ECDSA", "BC");
 			dsa.initSign(privateKey);
 			byte[] strByte = input.getBytes();
 			dsa.update(strByte);
-			byte[] realSig = dsa.sign();
-			output = realSig;
+			output = dsa.sign();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -95,22 +94,21 @@ public class StringUtil {
 	public static String getMerkleRoot(ArrayList<Transaction> transactions) {
 		int count = transactions.size();
 		
-		ArrayList<String> previousTreeLayer = new ArrayList<String>();
+		ArrayList<String> previousTreeLayer = new ArrayList<>();
 		for(Transaction transaction : transactions) {
 			previousTreeLayer.add(transaction.getTransactionId());
 		}
 		ArrayList<String> treeLayer = previousTreeLayer;
 		
 		while(count > 1) {
-			treeLayer = new ArrayList<String>();
+			treeLayer = new ArrayList<>();
 			for(int i=1; i < previousTreeLayer.size(); i++) {
 				treeLayer.add(applySha256(previousTreeLayer.get(i-1) + previousTreeLayer.get(i)));
 			}
 			count = treeLayer.size();
 			previousTreeLayer = treeLayer;
 		}
-		
-		String merkleRoot = (treeLayer.size() == 1) ? treeLayer.get(0) : "";
-		return merkleRoot;
+
+		return (treeLayer.size() == 1) ? treeLayer.get(0) : "";
 	}
 }

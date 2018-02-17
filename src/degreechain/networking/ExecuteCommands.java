@@ -40,7 +40,7 @@ public class ExecuteCommands {
 	}
 	
 	public void ping(){
-		//to be done
+		//ToDo
 	}
 
 }

@@ -16,8 +16,8 @@ public class Transaction {
 	private float value; //Contains the amount we wish to send to the recipient.
 	private byte[] signature; //This is to prevent anybody else from spending funds in our wallet.
 	
-	private ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
-	private ArrayList<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
+	private ArrayList<TransactionInput> inputs;
+	private ArrayList<TransactionOutput> outputs = new ArrayList<>();
 	
 	private static int sequence = 0; //A rough count of how many transactions have been generated
 	
@@ -30,12 +30,12 @@ public class Transaction {
 	}
 	
 	public boolean processTransaction() throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
-		
-		if(verifySignature() == false) {
+
+		if(!verifySignature()) {
 			System.out.println("#Transaction Signature failed to verify");
 			return false;
 		}
-				
+
 		//Gathers transaction inputs (Making sure they are unspent):
 		for(TransactionInput i : inputs) {
 			i.UTXO = Main.UTXOs.get(i.transactionOutputId);
@@ -46,24 +46,24 @@ public class Transaction {
 			System.out.println("Transaction Inputs to small: " + getInputsValue());
 			return false;
 		}
-		
+
 		//Generate transaction outputs:
 		float leftOver = getInputsValue() - value; //get value of inputs then the left over change:
 		transactionId = calulateHash();
 		outputs.add(new TransactionOutput( this.reciepient, value,transactionId)); //send value to recipient
-		outputs.add(new TransactionOutput( this.sender, leftOver,transactionId)); //send the left over 'change' back to sender		
-				
+		outputs.add(new TransactionOutput( this.sender, leftOver,transactionId)); //send the left over 'change' back to sender
+
 		//Add outputs to Unspent list
 		for(TransactionOutput o : outputs) {
 			Main.UTXOs.put(o.id , o);
 		}
-		
+
 		//Remove transaction inputs from UTXO lists as spent:
 		for(TransactionInput i : inputs) {
-			if(i.UTXO == null) continue; //if Transaction can't be found skip it 
+			if(i.UTXO == null) continue; //if Transaction can't be found skip it
 			Main.UTXOs.remove(i.UTXO.id);
 		}
-		
+
 		return true;
 	}
 	

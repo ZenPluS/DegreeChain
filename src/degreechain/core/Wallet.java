@@ -14,14 +14,13 @@ public class Wallet {
 	
 	private BCECPrivateKey privateKey;
 	private String publicKey;
-	
-	public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+	private HashMap<String,TransactionOutput> UTXOs = new HashMap<>();
 	
 	public Wallet() {
 		generateKeyPair();
 	}
 		
-	public void generateKeyPair() {
+	private void generateKeyPair() {
 		try {
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
@@ -32,7 +31,6 @@ public class Wallet {
 	        // Set the public and private keys from the keyPair
 	        setPrivateKey((BCECPrivateKey) keyPair.getPrivate());
 	        setPublicKey(StringUtil.getStringFromKey(keyPair.getPublic()));
-	        
 		}catch(Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -56,7 +54,7 @@ public class Wallet {
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
 			return null;
 		}
-		ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
+		ArrayList<TransactionInput> inputs = new ArrayList<>();
 		
 		float total = 0;
 		TransactionOutput UTXO;
@@ -81,7 +79,7 @@ public class Wallet {
 		return privateKey;
 	}
 
-	public void setPrivateKey(BCECPrivateKey privateKey) {
+	private void setPrivateKey(BCECPrivateKey privateKey) {
 		this.privateKey = privateKey;
 	}
 
@@ -89,7 +87,7 @@ public class Wallet {
 		return publicKey;
 	}
 
-	public void setPublicKey(String publicKey) {
+	private void setPublicKey(String publicKey) {
 		this.publicKey = publicKey;
 	}
 	

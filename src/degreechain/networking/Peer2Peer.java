@@ -13,10 +13,9 @@ public class Peer2Peer {
 	private int port = 8888;
 	private Socket socket;
 	private ServerSocket server;
-	private LinkedList<Peer> peers = new LinkedList<Peer>();
+	private LinkedList<Peer> peers = new LinkedList<>();
 	private DataInputStream inputStream;
 	private DataOutputStream outputStream;
-	private Thread peerThread;
 	private Thread sendThread;
 	
 	private boolean isRunning;
@@ -24,15 +23,13 @@ public class Peer2Peer {
 	public Peer2Peer(int port){
 		this.port = port;
 		isRunning = true;
-		peerThread = new Thread(new Runnable() {
-			   public void run() {
-			       try {
-					listen();
-				} catch (IOException e) {
-					e.getStackTrace();
-				}
-			   }
-			});
+		Thread peerThread = new Thread(() -> {
+            try {
+                listen();
+            } catch (IOException e) {
+                e.getStackTrace();
+            }
+        });
 		
 		peerThread.start();
 	}
@@ -79,8 +76,6 @@ public class Peer2Peer {
 			outputStream = new DataOutputStream(socket.getOutputStream());
 			inputStream = new DataInputStream(socket.getInputStream());
 			
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -117,8 +112,7 @@ public class Peer2Peer {
 	}
 	
 	public void ping(){
-		
+		//ToDO
 	}
-	
 
 }

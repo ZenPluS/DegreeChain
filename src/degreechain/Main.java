@@ -16,23 +16,40 @@ import degreechain.util.Parameters;
 public class Main {
 
     public static HashMap<String,TransactionOutput> UTXOs = new HashMap<>();
-    public static float minimumTransaction = 0.1f;
 
-    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
-        //add our blocks to the blockchain ArrayList:
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
+    /**
+     * valore minimo di una transazione, per tenere conto
+     * del più piccolo valore di Bitcoin -> MilliSatoshi
+     * */
+    public static float minimumTransaction = 0.00000000001f;
 
-        //Create wallets:
+    public static void main(String[] args)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+
+        /* Blockchain gestita come un ArrayList */
+        /* Setup Bouncey castle come Security Provider */
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
+        //Creazione portafogli:
         Wallet walletA = new Wallet();
         Wallet walletB = new Wallet();
-        Wallet wallet = new Wallet();
+        Wallet intermediary = new Wallet();
 
-        //create genesis transaction, which sends 100 NoobCoin to walletA:
-        Transaction genesisTransaction = new Transaction(wallet.getPublicKey(), walletA.getPublicKey(), 100f, null);
-        genesisTransaction.generateSignature(wallet.getPrivateKey());	 //manually sign the genesis transaction
-        genesisTransaction.setTransactionId("0"); //manually set the transaction id
-        genesisTransaction.getOutputs().add(new TransactionOutput(genesisTransaction.getReciepient(), genesisTransaction.getValue(), genesisTransaction.getTransactionId())); //manually add the Transactions Output
-        UTXOs.put(genesisTransaction.getOutputs().get(0).id, genesisTransaction.getOutputs().get(0)); //its important to store our first transaction in the UTXOs list.
+        //create genesis transaction, which sends 100 Coins to walletA:
+        Transaction genesisTransaction = new Transaction(intermediary.getPublicKey(), walletA.getPublicKey(), 100f, null);
+        /*MANUALY:*/
+        //manually sign the genesis transaction
+        genesisTransaction.generateSignature(intermediary.getPrivateKey());
+        //manually set the transaction id
+        genesisTransaction.setTransactionId("0");
+        //manually add the Transactions Output
+        genesisTransaction.getOutputs().add(new TransactionOutput(genesisTransaction.getReciepient(),
+                                                                  genesisTransaction.getValue(),
+                                                                  genesisTransaction.getTransactionId()
+                                                            )
+                                                    );
+        //its important to store our first transaction in the UTXOs list.
+        UTXOs.put(genesisTransaction.getOutputs().get(0).id, genesisTransaction.getOutputs().get(0));
 
         System.out.println("Creating and Mining Genesis block... ");
         Block genesis = new Block("0");
@@ -62,7 +79,6 @@ public class Main {
         System.out.println("WalletB's balance is: " + walletB.getBalance());
         addBlock(block3);
 
-
         if(!ChainUtils.isChainValid(Parameters.blockchain, genesisTransaction)) {
             System.out.println("Not Valid Chain!!");
             return;
@@ -74,11 +90,10 @@ public class Main {
         client.connect("127.0.0.1", 8888);
         client2.connect("127.0.0.1", 8888);
 
-        System.out.println("client"+client.getBlockChainSize());
-        System.out.println("client2"+client2.getBlockChainSize());
+        System.out.println("client "+client.getBlockChainSize());
+        System.out.println("client2 "+client2.getBlockChainSize());
         server.connect("127.0.0.1", 8889);
-        System.out.println("server"+server.getBlockChainSize());
-
+        System.out.println("server "+server.getBlockChainSize());
     }
 
     private static void addBlock(Block newBlock) {

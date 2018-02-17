@@ -7,7 +7,7 @@ public class TransactionInput {
 	
 	public TransactionInput(){}
 	
-	public TransactionInput(String transactionOutputId) {
+	TransactionInput(String transactionOutputId) {
 		this.transactionOutputId = transactionOutputId;
 	}
 

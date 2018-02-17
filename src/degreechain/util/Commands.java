@@ -9,7 +9,7 @@ public enum Commands {
 	
 	private String command;
 	
-	private Commands(String commands){
+	Commands(String commands){
 		this.command = commands;
 	}
 	

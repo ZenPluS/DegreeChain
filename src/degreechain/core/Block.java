@@ -15,11 +15,11 @@ public class Block {
 	private String hash;
 	private String previousHash; 
 	private String merkleRoot;
-	private ArrayList<Transaction> transactions = new ArrayList<Transaction>(); //our data will be a simple message.
+	private ArrayList<Transaction> transactions = new ArrayList<>(); //our data will be a simple message.
 	private long timeStamp; //as number of milliseconds since 1/1/1970.
 	private int nonce;
 	
-	public Block(){};
+	public Block(){}
 	
 	//Block Constructor.  
 	public Block(String previousHash ) {
@@ -31,13 +31,12 @@ public class Block {
 	
 	//Calculate new hash based on blocks contents
 	public String calculateHash() {
-		String calculatedhash = StringUtil.applySha256( 
+		return StringUtil.applySha256(
 				previousHash +
 				Long.toString(timeStamp) +
-				Integer.toString(nonce) + 
+				Integer.toString(nonce) +
 				merkleRoot
 				);
-		return calculatedhash;
 	}
 	
 	//Increases nonce value until hash target is reached.
@@ -52,22 +51,21 @@ public class Block {
 	}
 	
 	//Add transactions to this block
-	public boolean addTransaction(Transaction transaction) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+	public void addTransaction(Transaction transaction) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
 		//process transaction and check if valid, unless block is genesis block then ignore.
-		if(transaction == null) return false;		
+		if(transaction == null) return;
 		if((!previousHash.equals("0") )) {
-			if((transaction.processTransaction() != true)) {
+			if((!transaction.processTransaction())) {
 				System.out.println("Transaction failed to process. Discarded.");
-				return false;
+				return;
 			}
 		}
 		transactions.add(transaction);
 		System.out.println("Transaction Successfully added to Block");
-		return true;
 	}
 	
 	public ArrayList<Block> fromJsonToChain(String json){
-		ArrayList<Block> chain = new ArrayList<Block>();
+		ArrayList<Block> chain = new ArrayList<>();
 		
 		JsonArray array = new JsonParser().parse(json).getAsJsonArray();
 		
@@ -161,9 +159,7 @@ public class Block {
 				return false;
 		} else if (!previousHash.equals(other.previousHash))
 			return false;
-		if (timeStamp != other.timeStamp)
-			return false;
-		return true;
+		return timeStamp == other.timeStamp;
 	}
 
 }

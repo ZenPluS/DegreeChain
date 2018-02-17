@@ -16,7 +16,7 @@ public class ChainUtils {
 		Block currentBlock; 
 		Block previousBlock;
 		
-		HashMap<String,TransactionOutput> tempUTXOs = new HashMap<String,TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
+		HashMap<String,TransactionOutput> tempUTXOs = new HashMap<>(); //a temporary working list of unspent transactions at a given block state.
 		tempUTXOs.put(genesisTransaction.getOutputs().get(0).id, genesisTransaction.getOutputs().get(0));
 		
 		//loop through blockchain to check hashes:
@@ -74,11 +74,11 @@ public class ChainUtils {
 					tempUTXOs.put(output.id, output);
 				}
 				
-				if( currentTransaction.getOutputs().get(0).reciepient != currentTransaction.getReciepient()) {
+				if(!currentTransaction.getOutputs().get(0).reciepient.equals(currentTransaction.getReciepient())) {
 					System.out.println("#Transaction(" + t + ") output reciepient is not who it should be");
 					return false;
 				}
-				if( currentTransaction.getOutputs().get(1).reciepient != currentTransaction.getSender()) {
+				if(!currentTransaction.getOutputs().get(1).reciepient.equals(currentTransaction.getSender())) {
 					System.out.println("#Transaction(" + t + ") output 'change' is not sender.");
 					return false;
 				}
