@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="bcprov-jdk15on-1591">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../bcprov-jdk15on-159.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../bitcoinj-core-0.14.5-bundled.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../gson-2.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../bitcoinj-core-0.14.5-bundled.jar!/" />
+    </SOURCES>
+  </library>
+</component>
